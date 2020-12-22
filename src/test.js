@@ -37,7 +37,7 @@ gameController.gameState.move = [1, 2, 3, 4, 25];
 
 
 test ('drawingBoard', () => {
-    expect(calcTileType(this.gamePlay.board.x * this.gamePlay.board.y - 1)).toBe('bottom-right');
+    // expect(calcTileType(this.gamePlay.board.x * this.gamePlay.board.y - 1)).toBe('bottom-right');
     expect(calcTileType((this.gamePlay.board.x * this.gamePlay.board.y) - this.gamePlay.board.y)).toBe('bottom-left');
     expect(calcTileType(this.gamePlay.board.y - 1)).toBe('top-right');
 });

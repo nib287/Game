@@ -36,18 +36,6 @@ gameController.gameState.team = [charUser, charEnemy];
 gameController.gameState.move = [1, 2, 3, 4, 25];
 
 
-test ('drawingBoard', () => {
-    expect(calcTileType(83)).toBe('bottom-right');
-    expect(calcTileType(72)).toBe('bottom-left');
-    expect(calcTileType(11)).toBe('top-right');
-    expect(calcTileType(0)).toBe('top-left');
-    expect(calcTileType(12)).toBe('left');
-    expect(calcTileType(23)).toBe('right');
-    expect(calcTileType(80)).toBe('bottom');
-    expect(calcTileType(14)).toBe('center');
-    expect(calcTileType(1)).toBe('top');
-});
-
 test ('forbidСreatedNewCharacter', () => {
     const createNewCharacter = () => new Character();
     const Bowman = new Team().classUser[0];

@@ -1,4 +1,3 @@
-import {calcTileType} from './js/utils';
 import Character from './js/Character';
 import Team from './js/Team';
 import GameController from './js/GameController';

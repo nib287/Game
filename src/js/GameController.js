@@ -21,8 +21,9 @@ export default class GameController {
   }
 
   redrawTeam(userCharacterCount, enemyCharacterCount, survivingTeam) {
-    const teamEnemy = generateTeam(new Team().classEnemy, this.gameState.level, enemyCharacterCount);
-    const teamUser = generateTeam(new Team().classUser, this.gameState.level, userCharacterCount, survivingTeam);
+    // добавил пареметром this.gamePlay.boardSize в функцию generateTeam
+    const teamEnemy = generateTeam(new Team().classEnemy, this.gameState.level, enemyCharacterCount, this.gamePlay.boardSize );
+    const teamUser = generateTeam(new Team().classUser, this.gameState.level, userCharacterCount, this.gamePlay.boardSize, survivingTeam);
     this.gameState.team = [...teamEnemy, ...teamUser];
     this.gamePlay.redrawPositions(this.gameState.team); 
   }
@@ -81,8 +82,13 @@ export default class GameController {
 
   getHorizontalLine(distance, index) {
     const arrHorizontalSells = [];
-    const firstNumber = Math.floor(index / 8) * 8;
-    const lastNumber =  firstNumber + 7;
+    
+    // const firstNumber = Math.floor(index / 8) * 8;
+    const firstNumber = Math.floor(index / this.gamePlay.boardSize.y) * this.gamePlay.boardSize.y;
+    
+    // const lastNumber =  firstNumber + 7;
+    const lastNumber =  firstNumber + (this.gamePlay.boardSize.y - 1);
+   
     for (let i = index - distance; i < index + distance + 1; i++) {
       if(i <= lastNumber && i >= firstNumber && i != index) arrHorizontalSells.push(i);
     }
@@ -93,13 +99,18 @@ export default class GameController {
   getVerticalLine(distance, index) {
     const arrVerticalSells = [];
     let lowerLimit = null;
-    for(let i = index; i >= 0 ; i = i - 8) lowerLimit = i;
-    let upperLimit = lowerLimit + 56;
     
-    for(let i = index - (distance * 8); i < index + distance * 8 + 1; i = i + 8 ) {
+    // for(let i = index; i >= 0 ; i = i - 8) lowerLimit = i;
+    for(let i = index; i >= 0 ; i = i - this.gamePlay.boardSize.y) lowerLimit = i;
+    
+    // let upperLimit = lowerLimit + 56;
+    let upperLimit = lowerLimit + this.gamePlay.boardSize.y * (this.gamePlay.boardSize.x - 1);
+    
+    // for(let i = index - (distance * 8); i < index + distance * 8 + 1; i = i + 8 ) {
+    for(let i = index - (distance * this.gamePlay.boardSize.y); i < index + distance * this.gamePlay.boardSize.y + 1; i = i + this.gamePlay.boardSize.y) {
       if(i <= upperLimit && i >= lowerLimit && i != index) arrVerticalSells.push(i);
     }
-
+    
     return arrVerticalSells;
   }
 
@@ -107,32 +118,51 @@ export default class GameController {
     const arrRL = [];
     let lowerLimitRL = null;
     let upperLimitRL = null;
-    for(let i = index; i > -1 && (i + 1) % 8 != 0; i = i - 7) lowerLimitRL = i - 7;
-    if(lowerLimitRL < 0) lowerLimitRL += 7;  
-    if(lowerLimitRL == null) lowerLimitRL = index;   
+    const boardSizeXY = this.gamePlay.boardSize.y * this.gamePlay.boardSize.x
     
-    for(let i = lowerLimitRL; i < 64 && i % 8 != 0; i = i + 7) upperLimitRL = i + 7;
-    if(upperLimitRL >= 63) upperLimitRL -= 7;  
-
-    for(let i = index - (distance * 7); i < index + distance * 7 + 1; i = i + 7 ) {
+    // for(let i = index; i > -1 && (i + 1) % 8 != 0; i = i - 7) lowerLimitRL = i - 7;
+    for(let i = index; i > -1 && (i + 1) % this.gamePlay.boardSize.y != 0; i = i - (this.gamePlay.boardSize.y - 1)) lowerLimitRL = i - (this.gamePlay.boardSize.y - 1);
+    
+    // if(lowerLimitRL < 0) lowerLimitRL += 7;
+    if(lowerLimitRL < 0) lowerLimitRL += this.gamePlay.boardSize.y - 1;    
+    
+    if(lowerLimitRL == null) lowerLimitRL = index; 
+    
+    // for(let i = lowerLimitRL; i < 64 && i % 8 != 0; i = i + 7) upperLimitRL = i + 7;
+    for(let i = lowerLimitRL; i < boardSizeXY  && i % this.gamePlay.boardSize.y != 0; i = i + (this.gamePlay.boardSize.y - 1)) upperLimitRL = i + (this.gamePlay.boardSize.y - 1);
+    
+    // if(upperLimitRL >= 63) upperLimitRL -= 7; 
+    if(upperLimitRL >= boardSizeXY - 1) upperLimitRL -= this.gamePlay.boardSize.y - 1;   
+    
+    // for(let i = index - (distance * 7); i < index + distance * 7 + 1; i = i + 7 ) {
+      for(let i = index - (distance * (this.gamePlay.boardSize.y - 1)); i < index + distance * (this.gamePlay.boardSize.y - 1) + 1; i = i + (this.gamePlay.boardSize.y - 1)) {
       if(i <= upperLimitRL && i >= lowerLimitRL && i != index) arrRL.push(i);
     } 
-    
+   
     return arrRL;
   }
 
   getDiagonalLR(distance, index) {
+    const boardSizeXY = this.gamePlay.boardSize.y * this.gamePlay.boardSize.x
     const arrLR = [];
     let lowerLimitLR = null;
     let upperLimitLR = null;
-    for(let i = index; i > -1 && i % 8 != 0; i -= 9) lowerLimitLR = i - 9;
-    if(lowerLimitLR < 0) lowerLimitLR += 9;
+    // for(let i = index; i > -1 && i % 8 != 0; i -= 9) lowerLimitLR = i - 9;
+    for(let i = index; i > -1 && i % this.gamePlay.boardSize.y != 0; i -= this.gamePlay.boardSize.y + 1) lowerLimitLR = i - (this.gamePlay.boardSize.y + 1);
+    
+    // if(lowerLimitLR < 0) lowerLimitLR += 9;
+    if(lowerLimitLR < 0) lowerLimitLR += this.gamePlay.boardSize.y + 1;
+    
     if(lowerLimitLR == null) lowerLimitLR = index;
-  
-    for(let i = lowerLimitLR; i < 64 && (i + 1) % 8 != 0; i += 9) upperLimitLR = i + 9;
-    if(upperLimitLR >= 63) upperLimitLR -= 9;
 
-    for(let i = index - (distance * 9); i < index + distance * 9 + 1; i = i + 9 ) {
+    // for(let i = lowerLimitLR; i < 64 && (i + 1) % 8 != 0; i += 9) upperLimitLR = i + 9;
+    // if(upperLimitLR >= 63) upperLimitLR -= 9;
+    for(let i = lowerLimitLR; i < boardSizeXY && (i + 1) % this.gamePlay.boardSize.y != 0; i += this.gamePlay.boardSize.y + 1) upperLimitLR = i + (this.gamePlay.boardSize.y + 1);
+    if(upperLimitLR >= boardSizeXY - 1) upperLimitLR -= this.gamePlay.boardSize.y + 1;
+   
+
+    // for(let i = index - (distance * 9); i < index + distance * 9 + 1; i = i + 9 ) {
+    for(let i = index - (distance * (this.gamePlay.boardSize.y + 1)); i < index + distance * (this.gamePlay.boardSize.y + 1) + 1; i = i + (this.gamePlay.boardSize.y + 1)) {
       if(i <= upperLimitLR && i >= lowerLimitLR && i != index) arrLR.push(i);
     }    
     
@@ -155,15 +185,23 @@ export default class GameController {
   }
 
   getArealUnderAttack(position, attackRange) {
+    const boardSizeXY = this.gamePlay.boardSize.y * this.gamePlay.boardSize.x
     const arrVerticalSells = [];
-    for (let i = position - (attackRange * 8); i < position +attackRange * 8 + 1; i = i + 8 ) {
-      if(i <= 63 && i >= 0) arrVerticalSells.push(i);
+    // for (let i = position - (attackRange * 8); i < position + attackRange * 8 + 1; i = i + 8 ) {
+      for (let i = position - (attackRange * this.gamePlay.boardSize.y); i < position + attackRange * (this.gamePlay.boardSize.y) + 1; i = i + this.gamePlay.boardSize.y) {
+      
+    // if(i <= 63 && i >= 0) arrVerticalSells.push(i);
+      if(i <= boardSizeXY - 1 && i >= 0) arrVerticalSells.push(i);
     } 
     
     const arealUnderAttack = [];
     const getHorizontalRange = (item) => {
-      const firstNumber = Math.floor(item / 8) * 8;
-      const lastNumber =  firstNumber + 7;
+      // const firstNumber = Math.floor(item / 8) * 8;
+      const firstNumber = Math.floor(item / this.gamePlay.boardSize.y) * this.gamePlay.boardSize.y;
+      
+      // const lastNumber =  firstNumber + 7;
+      const lastNumber =  firstNumber + (this.gamePlay.boardSize.y - 1);
+      
       for (let i = item - attackRange; i < item + attackRange + 1; i++) {
         if(i <= lastNumber && i >= firstNumber) arealUnderAttack.push(i);
       }  
@@ -226,7 +264,8 @@ export default class GameController {
     if(char && char.character.party === 'enemy') this.gameState.enemyObj = char;
     
     let sellUnderAttack;
-    if( this.gameState.enemyObj) {
+    // if(this.gameState.enemyObj && this.gameState.userObj) {
+    if(this.gameState.enemyObj && this.gameState.userObj) {
       const arealUnderAttack = this.getArealUnderAttack(this.gameState.activeChar, this.gameState.userObj.character.attackRange);
       sellUnderAttack = arealUnderAttack.find(item => item === index);
     } 
@@ -247,10 +286,14 @@ export default class GameController {
   }
 
   findUserSellToAttack(areal, position) {
-    let horizont = this.getHorizontalLine(8, position);
-    let vertical = this.getVerticalLine(8, position);
-    let rl = this.getDiagonalRL(8, position);
-    let lr = this.getDiagonalLR(8, position);
+    // let horizont = this.getHorizontalLine(8, position);
+    // let vertical = this.getVerticalLine(8, position);
+    // let rl = this.getDiagonalRL(8, position);
+    // let lr = this.getDiagonalLR(8, position);
+    let horizont = this.getHorizontalLine(this.gamePlay.boardSize.y, position);
+    let vertical = this.getVerticalLine(this.gamePlay.boardSize.x, position);
+    let rl = this.getDiagonalRL(this.gamePlay.boardSize.y, position);
+    let lr = this.getDiagonalLR(this.gamePlay.boardSize.y, position);
     
     const getTarget = (item) => {
       const unitedArr = [...item, ...areal].sort((a, b) => {return a - b});
@@ -284,25 +327,32 @@ export default class GameController {
 
     if(vertical && !verticalIsCcupied) return {
       target: vertical,
-      coefficient: 8
+      // coefficient: 8
+      coefficient: this.gamePlay.boardSize.y
     };
 
     if(rl && !rlIsCcupied) return {
       target: rl,
-      coefficient: 7 
+      // coefficient: 7 
+      coefficient: this.gamePlay.boardSize.y - 1
     };
 
     if(lr && !lrIsCcupied) return {
       target: lr,
-      coefficient: 9
+      // coefficient: 9
+      coefficient: this.gamePlay.boardSize.y + 1
     };
   }
 
   getNextPosition(areal, position, distance) {
     const starPosition = position;
     let nextPosition = null;  
-    const firstNumber = Math.floor(position / 8) * 8;
-    const lastNumber =  firstNumber + 7;
+    
+    // const firstNumber = Math.floor(position / 8) * 8;
+    // const lastNumber =  firstNumber + 7;
+    const firstNumber = Math.floor(position / this.gamePlay.boardSize.y) * this.gamePlay.boardSize.y;
+    const lastNumber =  firstNumber + (this.gamePlay.boardSize.y -1);
+
 
     let userSell = this.findUserSellToAttack(areal, position);
     

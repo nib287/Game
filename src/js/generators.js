@@ -30,12 +30,24 @@ function* characterGenerator(allowedTypes, maxLevel) {
   yield type;
 }
 
-export default function generateTeam(allowedTypes, maxLevel, characterCount, survivingTeam) {
+export default function generateTeam(allowedTypes, maxLevel, characterCount, boardSize, survivingTeam) {
   if(maxLevel === 1) characterCount += 1;
-
+  
+  const boardSizeXY = boardSize.x * boardSize.y;
   let team = [];
-  const userTeamPositions = [8, 16, 24, 32, 40, 48, 56, 1, 9, 17, 25, 33, 41, 49, 57];
-  const enemyTeamPositions = [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 47, 46, 54, 55, 62, 63];
+  // const userTeamPositions = [8, 16, 24, 32, 40, 48, 56, 1, 9, 17, 25, 33, 41, 49, 57];
+  // const enemyTeamPositions = [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 47, 46, 54, 55, 62, 63];
+  const userTeamPositions = [];
+  const enemyTeamPositions = [];
+
+  const getTeamPositions = () => {
+    for (let i = 1; i <= boardSizeXY - 1; i++) {
+      if(i % boardSize.y === 0 || (i - 1) % boardSize.y === 0) userTeamPositions.push(i);
+      if((i - (boardSize.y - 1)) % boardSize.y === 0 || (i - (boardSize.y - 2)) % boardSize.y === 0) enemyTeamPositions.push(i);
+    }
+  }
+
+  getTeamPositions();
  
   const getPlayerPosition = (palyer) => {
     const indexPosition = Math.floor(Math.random() * palyer.length);

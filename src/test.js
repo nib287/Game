@@ -37,9 +37,15 @@ gameController.gameState.move = [1, 2, 3, 4, 25];
 
 
 test ('drawingBoard', () => {
-    // expect(calcTileType(this.gamePlay.board.x * this.gamePlay.board.y - 1)).toBe('bottom-right');
-    expect(calcTileType((this.gamePlay.board.x * this.gamePlay.board.y) - this.gamePlay.board.y)).toBe('bottom-left');
-    expect(calcTileType(this.gamePlay.board.y - 1)).toBe('top-right');
+    expect(calcTileType(83)).toBe('bottom-right');
+    expect(calcTileType(72)).toBe('bottom-left');
+    expect(calcTileType(11)).toBe('top-right');
+    expect(calcTileType(0)).toBe('top-left');
+    expect(calcTileType(12)).toBe('left');
+    expect(calcTileType(23)).toBe('right');
+    expect(calcTileType(80)).toBe('bottom');
+    expect(calcTileType(14)).toBe('center');
+    expect(calcTileType(1)).toBe('top');
 });
 
 test ('forbidСreatedNewCharacter', () => {

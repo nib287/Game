@@ -35,8 +35,6 @@ export default function generateTeam(allowedTypes, maxLevel, characterCount, boa
   
   const boardSizeXY = boardSize.x * boardSize.y;
   let team = [];
-  // const userTeamPositions = [8, 16, 24, 32, 40, 48, 56, 1, 9, 17, 25, 33, 41, 49, 57];
-  // const enemyTeamPositions = [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 47, 46, 54, 55, 62, 63];
   const userTeamPositions = [];
   const enemyTeamPositions = [];
 

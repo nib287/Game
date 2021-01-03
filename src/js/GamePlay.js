@@ -2,10 +2,9 @@ import { calcHealthLevel, calcTileType } from './utils';
 
 export default class GamePlay {
   constructor() {
-    // this.boardSize = 8;
     this.boardSize = {
       x: 7,
-      y: 12 // поменять в стилях .board свойство reapet
+      y: 12 
     }
     
     this.container = null;
@@ -60,9 +59,8 @@ export default class GamePlay {
     this.boardEl = this.container.querySelector('[data-id=board]');
 
     this.boardEl.classList.add(theme);
-    
-    // for (let i = 0; i < this.boardSize ** 2; i += 1) {
-      for (let i = 0; i < this.boardSize.x * this.boardSize.y; i += 1) {
+  
+    for (let i = 0; i < this.boardSize.x * this.boardSize.y; i += 1) {
       const cellEl = document.createElement('div');
       cellEl.classList.add('cell', 'map-tile', `map-tile-${calcTileType(i, this.boardSize)}`);
       cellEl.addEventListener('mouseenter', this.enterListener);
